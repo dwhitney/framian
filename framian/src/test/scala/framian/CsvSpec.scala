@@ -159,5 +159,16 @@ class CsvSpec extends Specification {
         Right(CsvRow(Vector(Data(" a "), Data(" "), Data(" 'a'"), Data("b")))),
         Right(CsvRow(Vector(Data("  b  "), Data("c  "), Data("   ")))))
     }
+
+    "toString should keep the frame's order regardless of the column index" in {
+
+      val frameWithoutColIndex = Frame.fromRows(0 :: 1 :: 2 :: 3 :: 4 :: 5 :: HNil)
+
+      Csv.fromFrame(CsvFormat.CSV)(frameWithoutColIndex).toString must_== "0,1,2,3,4,5"
+
+      val frameWithColIndex = frameWithoutColIndex.withColIndex(Index.fromKeys("D", "1", "2", "3", "4", "5"))
+      
+      Csv.fromFrame(CsvFormat.CSV)(frameWithColIndex).toString must_== "0,1,2,3,4,5"
+    }
   }
 }
